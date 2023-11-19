@@ -1,6 +1,8 @@
 import { Hono } from "hono";
 import { logger } from "hono/logger";
 import { cors } from "hono/cors";
+import Top from "./components/Top";
+import { Route } from "./components/types";
 
 const app = new Hono();
 
@@ -22,6 +24,17 @@ app.use("/*", async (c, next) => {
   await next();
 });
 
-app.get("/", (c) => c.json({ ok: true, message: "ok" }, 200));
+const routes: Route[] = [
+  {
+    path: "/",
+    description: "このページ",
+  },
+  {
+    path: "*/?delay=1000",
+    description: "delayミリ秒待機してレスポンスを返却する。最大 60 * 1000ms",
+  },
+];
+
+app.get("/", (c) => c.html(<Top routes={routes} />));
 
 export default app;
